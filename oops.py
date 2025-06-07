@@ -24,7 +24,7 @@ f3.texture = "creamy and soft"
 f3.details()
 """
 
-#python inheritance
+"""#python inheritance
 class person:
     def __init__(self, name, id_num):
         self.name = name
@@ -44,3 +44,24 @@ class employ(person):
 any = employ("Kiera", "9367", "£70,000", "CEO")
 any.details()
 any.show()
+"""
+class product:
+    def __init__(self, brand, type, function, vitamins, color, texture, scent):
+        self.brand = brand
+        self.type = type
+        self.function = function
+        self.vitamins = vitamins
+        self.color = color
+        self.texture = texture
+        self.scent = scent
+    def details(self):
+        print(f"This product is under the brand of {self.brand} and is a {self.type}. Its function is to {self.function} and it has {self.vitamins}. It's {self.color} in color and is {self.texture}. It has {self.scent}.")
+
+p1 = product("Simple", "facial wash", "wash away make-up, remove impurities and cleanse and refresh the skin", "vitamin C", "iridescent white", "slippery and soapy", "no scent")
+p2 = product("Lush", "cuticle and hand butter", "nourish nails and rough skin", "beeswax, shea butter and avocado oil", "bright lemony yellow", "soft, creamy and slightly exfoliating", "a warm and vibrant lemon scent")
+p3 = product("Lush", "hand cream", "provide intense hydration and nourishment", "shea, cashew and almond butter and rose water with chamomile blue oil, plus evening primrose oil", "almond white", "creamy and slightly exfoliating due to small black beads", "a subtle herbal scent")
+
+p1.details()
+print(p3.brand)
+p2.texture = "balmy and slightly exfoliating"
+p3.details()
