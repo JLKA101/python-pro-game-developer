@@ -1,13 +1,18 @@
 import pygame
+import random
 pygame.init()
 screen = pygame.display.set_mode((864, 800))
 pygame.display.set_caption("flabby bird!")
 
 bg = pygame.image.load("buildings.png")
 floor = pygame.image.load("ground.png")
+ground_scroll = 0
 flying = False
 gameOver = False
 clock = pygame.time.Clock()
+pipe_frequency = 1500
+last_pipe = pygame.time.get_ticks() - pipe_frequency
+past_pipe = False
 
 class bird(pygame.sprite.Sprite):
     def __init__(self, x, y):
@@ -24,9 +29,11 @@ class bird(pygame.sprite.Sprite):
         self.clicked = False
         self.counter = 0
     
+
     def update(self):
         if flying == True:
             self.velocity += 0.5
+
             if self.rect.bottom < 670:
                 self.rect.y += self.velocity
         if gameOver == False:
@@ -43,22 +50,55 @@ class bird(pygame.sprite.Sprite):
                     self.index = 0
                 self.image = self.images[self.index]
 
+class pipe(pygame.sprite.Sprite):
+    def __init__(self, x, y, face):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.image.load("pipe.png")
+        self.rect = self.image.get_rect()
+        if face == 1:
+            self.image = pygame.transform.flip(self.image, False, True)
+            self.rect.bottomleft = [x, y - 75]
+        elif face == -1:
+            self.rect.topleft = [x, y + 75]
+    def update(self):
+        self.rect.x -= 5
+        if self.rect.right < 0:
+            self.kill()
+
 flappy = bird(90, 300)
 birdGroup = pygame.sprite.Group()
 birdGroup.add(flappy)
+pipeGroup = pygame.sprite.Group()
 
 while True:
     clock.tick(60)
     screen.blit(bg, (0, 0))
-    screen.blit(floor, (0, 670))
+    pipeGroup.draw(screen)
+    screen.blit(floor, (ground_scroll, 670))
     birdGroup.draw(screen)
     birdGroup.update()
+    if flappy.rect.bottom > 670 or flappy.rect.top < 0:
+        gameOver = True
+        flying = False
+    if flying == True and gameOver == False:
+        time = pygame.time.get_ticks()
+        pipe_height = random.randint(-125, 125)
+        if time - last_pipe > pipe_frequency:
+            top = pipe(864, 400 + pipe_height, 1)
+            bottom = pipe(864, 400 + pipe_height, -1)
+            pipeGroup.add(top)
+            pipeGroup.add(bottom)
+            last_pipe = time
+        pipeGroup.update()
+        ground_scroll -= 5
+        if ground_scroll < -35:
+            ground_scroll = 0
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             exit()
         if event.type == pygame.MOUSEBUTTONDOWN and flying == False and gameOver == False:
             flying = True
-
+            
 
     pygame.display.update()
 
@@ -68,6 +108,6 @@ self.image, self.rect are the arguments
 list for animation
 
 HOMEWORK HINT!
-move grund to left
-make blit a varoable to change and set back to 0 when ground runs out
+move ground to left
+make ground.blit a variable to change and set back to 0 when ground runs out
 """
